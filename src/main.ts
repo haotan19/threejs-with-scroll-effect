@@ -1,27 +1,60 @@
-import './style.css'
-import { gsap } from 'gsap'
-import { BufferGeometry, Line, LineBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
+import gsap from "gsap";
+import {
+  BoxGeometry,
+  Mesh,
+  MeshBasicMaterial,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+} from "three";
+import "./style.css";
 
-const renderer = new WebGLRenderer({ alpha: true })
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+const renderer = new WebGLRenderer({ alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+const app = document.getElementById("app");
 
-const camera = new PerspectiveCamera(45, window.innerWidth/ window.innerHeight, 1, 500)
-camera.position.set(0,0,100)
-camera.lookAt(0,0,0)
+if (app) {
+  app.appendChild(renderer.domElement);
 
-const scene = new Scene();
+  const camera = new PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    1,
+    500
+  );
+  camera.position.set(0, 0, 100);
+  camera.lookAt(0, 0, 0);
 
-const material = new LineBasicMaterial({ color: 0x0000ff })
+  const scene = new Scene();
 
-const points = []
-points.push(new Vector3(-10, 0, 0))
-points.push(new Vector3(0, 10, 0))
-points.push(new Vector3(10, 0, 0))
+  const geometry = new BoxGeometry(10, 10, 10);
+  const material = new MeshBasicMaterial({ color: 0x00ffff });
+  const cube = new Mesh(geometry, material);
+  scene.add(cube);
 
-const geometry = new BufferGeometry().setFromPoints(points)
+  app.addEventListener("click", () => {
+    console.log("Test");
+  });
 
-const line = new Line(geometry, material)
+  const tl = gsap.timeline({ repeat: -1, defaults: { ease: "power3.inOut" } });
+  tl.to(cube.position,
+    {
+      x: 3,
+      y: 3,
+    },
+  ).to(cube.rotation,
+    {
+      duration: 3,
+      z: Math.PI * 1.25,
+      x: Math.PI * 0.75
+    },
+    "<"
+  );
 
-scene.add(line)
-renderer.render(scene, camera)
+  function render() {
+    requestAnimationFrame(render);
+    renderer.render(scene, camera);
+  }
+
+  render();
+}
