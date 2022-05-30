@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
 import {
   BoxGeometry,
   Mesh,
@@ -8,6 +9,8 @@ import {
   WebGLRenderer,
 } from "three";
 import "./style.css";
+
+gsap.registerPlugin(ScrollTrigger)
 
 const renderer = new WebGLRenderer({ alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -36,7 +39,13 @@ if (app) {
     console.log("Test");
   });
 
-  const tl = gsap.timeline({ repeat: -1, defaults: { ease: "power3.inOut" } });
+  const tl = gsap.timeline({ defaults: { ease: "power3.inOut" }, scrollTrigger: {
+    trigger: "#app",
+    pin: true,
+    start: "top top",
+    end: "+=2000",
+    scrub: 1
+  } });
   tl.to(cube.position,
     {
       x: 3,
