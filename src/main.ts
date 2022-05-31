@@ -2,13 +2,18 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import {
   BoxGeometry,
+  Color,
   Mesh,
   MeshBasicMaterial,
+  MeshPhongMaterial,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
 } from "three";
+import { directionLight } from "./light";
 import "./style.css";
+
+const CUBE_COLOR = ' #F5F5F5'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -31,9 +36,15 @@ if (app) {
   const scene = new Scene();
 
   const geometry = new BoxGeometry(10, 10, 10);
-  const material = new MeshBasicMaterial({ color: 0x00ffff });
+  const material = new MeshPhongMaterial({ color: new Color(CUBE_COLOR) , shininess: 30 });
   const cube = new Mesh(geometry, material);
   scene.add(cube);
+
+  scene.add(directionLight(.1, 0, 0, 100))
+  scene.add(directionLight(.9, 0, 80, 30))
+  scene.add(directionLight(.2, 0, -80, 60))
+  scene.add(directionLight(.3, -120, -120, -1))
+  scene.add(directionLight(.3, 120, -120, -1))
 
   app.addEventListener("click", () => {
     console.log("Test");
